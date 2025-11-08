@@ -9,6 +9,7 @@ import Tools from "./pages/Tools";
 import Calculator from "./pages/Calculator";
 import Download from "./pages/Download";
 import Contact from "./pages/Contact";
+import Consultation from "./pages/Consultation";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/calculator" element={<Calculator />} />
           <Route path="/download" element={<Download />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/consultation" element={<Consultation />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { BookOpen, Calculator, Package, Phone, Menu } from "lucide-react";
+import { BookOpen, Calculator, Package, Phone, Menu, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -13,6 +13,7 @@ const Navbar = () => {
     { to: "/about", label: "About Book", icon: BookOpen },
     { to: "/tools", label: "Digital Tools", icon: Package },
     { to: "/calculator", label: "Calculator", icon: Calculator },
+    { to: "/consultation", label: "Consultation", icon: UserCheck },
     { to: "/contact", label: "Contact", icon: Phone },
   ];
 

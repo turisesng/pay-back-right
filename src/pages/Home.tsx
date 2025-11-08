@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Download, Calculator, Package, TrendingUp, CheckCircle, BookOpen } from "lucide-react";
+import { Download, Calculator, Package, TrendingUp, CheckCircle, BookOpen, UserCheck } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import bookCover from "@/assets/book-cover.jpg";
@@ -106,6 +106,51 @@ const Home = () => {
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* Consultation CTA Section */}
+      <section className="py-20 bg-gradient-to-br from-secondary/20 via-background to-primary/10">
+        <div className="container">
+          <Card className="border-2 border-primary shadow-xl max-w-4xl mx-auto">
+            <CardContent className="p-8 md:p-12">
+              <div className="flex flex-col md:flex-row items-center gap-8">
+                <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <UserCheck className="h-10 w-10 text-primary" />
+                </div>
+                <div className="flex-1 text-center md:text-left space-y-3">
+                  <h2 className="text-2xl md:text-3xl font-bold">Need Personalized Help?</h2>
+                  <p className="text-muted-foreground">
+                    Get expert one-on-one consultation for your TCF loan repayment, restructuring guidance, 
+                    and professional letter drafting assistance. Our team has helped hundreds of borrowers 
+                    successfully navigate their loan obligations.
+                  </p>
+                  <div className="flex flex-wrap gap-3 justify-center md:justify-start pt-2">
+                    <div className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="h-4 w-4 text-primary" />
+                      <span>Personalized Review</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="h-4 w-4 text-primary" />
+                      <span>Restructuring Strategy</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="h-4 w-4 text-primary" />
+                      <span>Letter Drafting</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="shrink-0">
+                  <Button asChild size="lg" variant="hero">
+                    <Link to="/consultation">
+                      <UserCheck className="mr-2 h-5 w-5" />
+                      Book a Consultation
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
