@@ -2,9 +2,10 @@ import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
+import PaymentDialog from "@/components/PaymentDialog";
+import ProductDeliveryDialog from "@/components/ProductDeliveryDialog";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { toast } from "sonner";
 import calculatorIcon from "@/assets/calculator-icon.jpg";
 import trackerIcon from "@/assets/tracker-icon.jpg";
 import recoveryIcon from "@/assets/recovery-icon.jpg";
@@ -12,6 +13,9 @@ import letterIcon from "@/assets/letter-icon.jpg";
 
 const Tools = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
+  const [deliveryDialogOpen, setDeliveryDialogOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<{ title: string; price: string } | null>(null);
 
   const products = [
     {
@@ -119,9 +123,12 @@ const Tools = () => {
   );
 
   const handleBuy = (productTitle: string, price: string) => {
-    toast.success(`Processing purchase for ${productTitle}`, {
-      description: `Price: ₦${price}. Payment integration coming soon!`
-    });
+    setSelectedProduct({ title: productTitle, price });
+    setPaymentDialogOpen(true);
+  };
+
+  const handlePaymentSuccess = () => {
+    setDeliveryDialogOpen(true);
   };
 
   return (
@@ -179,6 +186,23 @@ const Tools = () => {
       </main>
 
       <Footer />
+
+      {selectedProduct && (
+        <>
+          <PaymentDialog
+            open={paymentDialogOpen}
+            onOpenChange={setPaymentDialogOpen}
+            productTitle={selectedProduct.title}
+            price={selectedProduct.price}
+            onPaymentSuccess={handlePaymentSuccess}
+          />
+          <ProductDeliveryDialog
+            open={deliveryDialogOpen}
+            onOpenChange={setDeliveryDialogOpen}
+            productTitle={selectedProduct.title}
+          />
+        </>
+      )}
     </div>
   );
 };
