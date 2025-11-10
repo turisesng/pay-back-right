@@ -10,6 +10,7 @@ import Calculator from "./pages/Calculator";
 import Download from "./pages/Download";
 import Contact from "./pages/Contact";
 import Consultation from "./pages/Consultation";
+import LoanRestructureForm from "./pages/LoanRestructureForm";
 import ProductDelivery from "./pages/ProductDelivery";
 import NotFound from "./pages/NotFound";
 
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/download" element={<Download />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/consultation" element={<Consultation />} />
+          <Route path="/loan-restructure-form" element={<LoanRestructureForm />} />
           <Route path="/product-delivery" element={<ProductDelivery />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

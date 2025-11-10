@@ -129,7 +129,7 @@ const Tools = () => {
 
   const handlePaymentSuccess = () => {
     if (selectedProduct) {
-      navigate(`/product-delivery?product=${encodeURIComponent(selectedProduct.title)}&price=${selectedProduct.price}`);
+      navigate(`/loan-restructure-form?product=${encodeURIComponent(selectedProduct.title)}&price=${selectedProduct.price}`);
     }
   };
 
