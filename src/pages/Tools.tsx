@@ -1,9 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import PaymentDialog from "@/components/PaymentDialog";
-import ProductDeliveryDialog from "@/components/ProductDeliveryDialog";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import calculatorIcon from "@/assets/calculator-icon.jpg";
@@ -12,9 +12,9 @@ import recoveryIcon from "@/assets/recovery-icon.jpg";
 import letterIcon from "@/assets/letter-icon.jpg";
 
 const Tools = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
-  const [deliveryDialogOpen, setDeliveryDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<{ title: string; price: string } | null>(null);
 
   const products = [
@@ -128,7 +128,9 @@ const Tools = () => {
   };
 
   const handlePaymentSuccess = () => {
-    setDeliveryDialogOpen(true);
+    if (selectedProduct) {
+      navigate(`/product-delivery?product=${encodeURIComponent(selectedProduct.title)}&price=${selectedProduct.price}`);
+    }
   };
 
   return (
@@ -188,20 +190,13 @@ const Tools = () => {
       <Footer />
 
       {selectedProduct && (
-        <>
-          <PaymentDialog
-            open={paymentDialogOpen}
-            onOpenChange={setPaymentDialogOpen}
-            productTitle={selectedProduct.title}
-            price={selectedProduct.price}
-            onPaymentSuccess={handlePaymentSuccess}
-          />
-          <ProductDeliveryDialog
-            open={deliveryDialogOpen}
-            onOpenChange={setDeliveryDialogOpen}
-            productTitle={selectedProduct.title}
-          />
-        </>
+        <PaymentDialog
+          open={paymentDialogOpen}
+          onOpenChange={setPaymentDialogOpen}
+          productTitle={selectedProduct.title}
+          price={selectedProduct.price}
+          onPaymentSuccess={handlePaymentSuccess}
+        />
       )}
     </div>
   );
