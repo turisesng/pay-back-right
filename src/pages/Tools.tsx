@@ -139,20 +139,26 @@ const Tools = () => {
       return;
     }
 
-    // Calculator and App products
-    if (title.includes("Calculator") || title.includes("App") || title.includes("Reminder")) {
-      navigate(`/calculator-product-delivery${params}`);
+    // Calculator and App products go to calculator page
+    if (title.includes("Calculator") || title.includes("Reminder App")) {
+      navigate(`/calculator${params}`);
       return;
     }
 
-    // Tracker, Spreadsheet, and Worksheet products
-    if (title.includes("Tracker") || title.includes("Spreadsheet") || title.includes("Worksheet") || title.includes("Planner")) {
-      navigate(`/tracker-product-delivery${params}`);
+    // Business Recovery Plan Template
+    if (title.includes("Business Recovery Plan") || title.includes("Debt Prioritization")) {
+      navigate(`/business-recovery-plan${params}`);
       return;
     }
 
-    // Guides, eBooks, Workbooks, Templates, and Toolkits
-    navigate(`/guide-product-delivery${params}`);
+    // Tracker, Spreadsheet, Worksheet, Planner, and Reconciliation products
+    if (title.includes("Tracker") || title.includes("Spreadsheet") || title.includes("Worksheet") || title.includes("Planner") || title.includes("Reconciliation")) {
+      navigate(`/repayment-tracker${params}`);
+      return;
+    }
+
+    // Guides, eBooks, Workbooks, Comparison Charts
+    navigate(`/guide-reader${params}`);
   };
 
   return (

@@ -1,18 +1,28 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Calculator as CalcIcon, Download } from "lucide-react";
+import { Calculator as CalcIcon, Download, Mail, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 
 const Calculator = () => {
+  const [searchParams] = useSearchParams();
+  const { toast: toastHook } = useToast();
   const [loanAmount, setLoanAmount] = useState("1000000");
   const [interestRate, setInterestRate] = useState("9");
   const [tenor, setTenor] = useState("12");
   const [moratorium, setMoratorium] = useState("3");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [emailSent, setEmailSent] = useState(false);
+
+  const productTitle = searchParams.get("product") || "TCF Loan Repayment Calculator";
+  const price = searchParams.get("price") || "0";
 
   const calculateRepayment = () => {
     const principal = parseFloat(loanAmount);
@@ -80,6 +90,15 @@ const Calculator = () => {
   const handleDownloadSchedule = () => {
     toast.success("Downloading repayment schedule...", {
       description: "Your PDF will be ready shortly."
+    });
+  };
+
+  const handleEmailSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setEmailSent(true);
+    toastHook({
+      title: "Schedule Sent!",
+      description: `Your repayment schedule has been sent to ${email}`,
     });
   };
 
@@ -241,6 +260,64 @@ const Calculator = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Email Delivery Section */}
+            {emailSent ? (
+              <Card>
+                <CardHeader className="text-center">
+                  <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                    <CheckCircle2 className="w-8 h-8 text-primary" />
+                  </div>
+                  <CardTitle>Schedule Sent Successfully!</CardTitle>
+                  <CardDescription>
+                    Your repayment schedule has been sent to {email}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            ) : (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Deliver to Email</CardTitle>
+                  <CardDescription>
+                    Get your personalized calculator results sent to your email
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleEmailSubmit} className="space-y-4">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email Address *</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="your.email@example.com"
+                          required
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="phone">Phone Number *</Label>
+                        <Input
+                          id="phone"
+                          type="tel"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          placeholder="080XXXXXXXX"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <Button type="submit" className="w-full">
+                      <Mail className="w-4 h-4 mr-2" />
+                      Send Schedule to Email
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </main>

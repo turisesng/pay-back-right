@@ -15,6 +15,9 @@ import ProductDelivery from "./pages/ProductDelivery";
 import CalculatorProductDelivery from "./pages/CalculatorProductDelivery";
 import TrackerProductDelivery from "./pages/TrackerProductDelivery";
 import GuideProductDelivery from "./pages/GuideProductDelivery";
+import BusinessRecoveryPlan from "./pages/BusinessRecoveryPlan";
+import RepaymentTracker from "./pages/RepaymentTracker";
+import GuideReader from "./pages/GuideReader";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +41,9 @@ const App = () => (
           <Route path="/calculator-product-delivery" element={<CalculatorProductDelivery />} />
           <Route path="/tracker-product-delivery" element={<TrackerProductDelivery />} />
           <Route path="/guide-product-delivery" element={<GuideProductDelivery />} />
+          <Route path="/business-recovery-plan" element={<BusinessRecoveryPlan />} />
+          <Route path="/repayment-tracker" element={<RepaymentTracker />} />
+          <Route path="/guide-reader" element={<GuideReader />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
