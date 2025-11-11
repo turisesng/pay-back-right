@@ -12,6 +12,9 @@ import Contact from "./pages/Contact";
 import Consultation from "./pages/Consultation";
 import LoanRestructureForm from "./pages/LoanRestructureForm";
 import ProductDelivery from "./pages/ProductDelivery";
+import CalculatorProductDelivery from "./pages/CalculatorProductDelivery";
+import TrackerProductDelivery from "./pages/TrackerProductDelivery";
+import GuideProductDelivery from "./pages/GuideProductDelivery";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +35,9 @@ const App = () => (
           <Route path="/consultation" element={<Consultation />} />
           <Route path="/loan-restructure-form" element={<LoanRestructureForm />} />
           <Route path="/product-delivery" element={<ProductDelivery />} />
+          <Route path="/calculator-product-delivery" element={<CalculatorProductDelivery />} />
+          <Route path="/tracker-product-delivery" element={<TrackerProductDelivery />} />
+          <Route path="/guide-product-delivery" element={<GuideProductDelivery />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

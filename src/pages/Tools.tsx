@@ -128,9 +128,31 @@ const Tools = () => {
   };
 
   const handlePaymentSuccess = () => {
-    if (selectedProduct) {
-      navigate(`/loan-restructure-form?product=${encodeURIComponent(selectedProduct.title)}&price=${selectedProduct.price}`);
+    if (!selectedProduct) return;
+
+    const title = selectedProduct.title;
+    const params = `?product=${encodeURIComponent(title)}&price=${selectedProduct.price}`;
+
+    // Letter writing tools go to loan restructure form
+    if (title.includes("Letter") || title.includes("letter")) {
+      navigate(`/loan-restructure-form${params}`);
+      return;
     }
+
+    // Calculator and App products
+    if (title.includes("Calculator") || title.includes("App") || title.includes("Reminder")) {
+      navigate(`/calculator-product-delivery${params}`);
+      return;
+    }
+
+    // Tracker, Spreadsheet, and Worksheet products
+    if (title.includes("Tracker") || title.includes("Spreadsheet") || title.includes("Worksheet") || title.includes("Planner")) {
+      navigate(`/tracker-product-delivery${params}`);
+      return;
+    }
+
+    // Guides, eBooks, Workbooks, Templates, and Toolkits
+    navigate(`/guide-product-delivery${params}`);
   };
 
   return (
