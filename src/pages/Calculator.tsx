@@ -6,9 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Calculator as CalcIcon, Download, Mail, CheckCircle2 } from "lucide-react";
+import { Calculator as CalcIcon, Download, Mail, CheckCircle2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Calculator = () => {
   const [searchParams] = useSearchParams();
@@ -20,6 +21,7 @@ const Calculator = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [emailSent, setEmailSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const productTitle = searchParams.get("product") || "TCF Loan Repayment Calculator";
   const price = searchParams.get("price") || "0";
@@ -93,13 +95,37 @@ const Calculator = () => {
     });
   };
 
-  const handleEmailSubmit = (e: React.FormEvent) => {
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setEmailSent(true);
-    toastHook({
-      title: "Schedule Sent!",
-      description: `Your repayment schedule has been sent to ${email}`,
-    });
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke("send-product-email", {
+        body: {
+          email,
+          phone,
+          productTitle,
+          productId: crypto.randomUUID(),
+        },
+      });
+
+      if (error) throw error;
+
+      setEmailSent(true);
+      toastHook({
+        title: "Schedule Sent!",
+        description: `Your repayment schedule has been sent to ${email}`,
+      });
+    } catch (error: any) {
+      console.error("Error sending email:", error);
+      toastHook({
+        title: "Error",
+        description: error.message || "Failed to send email. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -310,9 +336,18 @@ const Calculator = () => {
                       </div>
                     </div>
 
-                    <Button type="submit" className="w-full">
-                      <Mail className="w-4 h-4 mr-2" />
-                      Send Schedule to Email
+                    <Button type="submit" className="w-full" disabled={loading}>
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          <Mail className="w-4 h-4 mr-2" />
+                          Send Schedule to Email
+                        </>
+                      )}
                     </Button>
                   </form>
                 </CardContent>
