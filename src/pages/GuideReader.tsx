@@ -7,12 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Download, CheckCircle2, BookOpen } from "lucide-react";
+import { Mail, Download, CheckCircle2, BookOpen, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const GuideReader = () => {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
@@ -20,13 +22,38 @@ const GuideReader = () => {
   const productTitle = searchParams.get("product") || "Digital Guide";
   const price = searchParams.get("price") || "0";
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    toast({
-      title: "Guide Delivered!",
-      description: "Your digital guide has been sent to your email.",
-    });
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke("send-product-email", {
+        body: {
+          email,
+          phone,
+          productTitle,
+          productId: crypto.randomUUID(),
+          userName: name,
+        },
+      });
+
+      if (error) throw error;
+
+      setSubmitted(true);
+      toast({
+        title: "Guide Delivered!",
+        description: "Your digital guide has been sent to your email.",
+      });
+    } catch (error: any) {
+      console.error("Error sending email:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send email. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -172,9 +199,18 @@ const GuideReader = () => {
                   </div>
                 </div>
 
-                <Button type="submit" className="w-full" size="lg">
-                  <Mail className="w-4 h-4 mr-2" />
-                  Send Guide to Email
+                <Button type="submit" className="w-full" size="lg" disabled={loading}>
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="w-4 h-4 mr-2" />
+                      Send Guide to Email
+                    </>
+                  )}
                 </Button>
               </form>
             </CardContent>

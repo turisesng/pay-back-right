@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Download, CheckCircle2, Plus, Trash2 } from "lucide-react";
+import { Mail, Download, CheckCircle2, Plus, Trash2, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Payment {
   id: number;
@@ -20,6 +21,7 @@ const RepaymentTracker = () => {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
   
   // Contact fields
   const [email, setEmail] = useState("");
@@ -52,13 +54,38 @@ const RepaymentTracker = () => {
     setPayments(payments.map(p => p.id === id ? { ...p, [field]: value } : p));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    toast({
-      title: "Tracker Generated!",
-      description: "Your repayment tracker has been sent to your email.",
-    });
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke("send-product-email", {
+        body: {
+          email,
+          phone,
+          productTitle,
+          productId: crypto.randomUUID(),
+          userName: borrowerName,
+        },
+      });
+
+      if (error) throw error;
+
+      setSubmitted(true);
+      toast({
+        title: "Tracker Generated!",
+        description: "Your repayment tracker has been sent to your email.",
+      });
+    } catch (error: any) {
+      console.error("Error sending email:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send email. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -267,9 +294,18 @@ const RepaymentTracker = () => {
                   </div>
                 </div>
 
-                <Button type="submit" className="w-full" size="lg">
-                  <Mail className="w-4 h-4 mr-2" />
-                  Generate & Send Tracker
+                <Button type="submit" className="w-full" size="lg" disabled={loading}>
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="w-4 h-4 mr-2" />
+                      Generate & Send Tracker
+                    </>
+                  )}
                 </Button>
               </form>
             </CardContent>
