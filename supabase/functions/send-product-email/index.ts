@@ -25,28 +25,10 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      throw new Error("No authorization header");
-    }
-
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      {
-        global: {
-          headers: { Authorization: authHeader },
-        },
-      }
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
-
-    const {
-      data: { user },
-    } = await supabaseClient.auth.getUser();
-
-    if (!user) {
-      throw new Error("User not authenticated");
-    }
 
     const { email, phone, productTitle, productId, userName }: ProductEmailRequest = await req.json();
 
@@ -56,7 +38,7 @@ const handler = async (req: Request): Promise<Response> => {
     const { error: deliveryError } = await supabaseClient
       .from("email_deliveries")
       .insert({
-        user_id: user.id,
+        user_id: null, // No authentication required for product delivery
         product_id: productId,
         email: email,
         phone: phone,
