@@ -66,7 +66,7 @@ const handler = async (req: Request): Promise<Response> => {
           }
         ],
         from: {
-          email: "noreply@yourdomain.com",
+          email: "logsexpress@gmail.com",
           name: "Debt Management Tools"
         },
         content: [
