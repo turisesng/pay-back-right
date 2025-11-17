@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
-const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const SENDGRID_API_KEY = Deno.env.get("SENDGRID_API_KEY");
 
 
 
@@ -69,18 +69,28 @@ const handler = async (req: Request): Promise<Response> => {
       throw deliveryError;
     }
 
-    // Send the email using Resend API directly
-    const emailResponse = await fetch("https://api.resend.com/emails", {
+    // Send the email using SendGrid API
+    const emailResponse = await fetch("https://api.sendgrid.com/v3/mail/send", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${RESEND_API_KEY}`,
+        "Authorization": `Bearer ${SENDGRID_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Debt Management Tools <onboarding@resend.dev>",
-        to: [email],
-        subject: `Your ${productTitle} is Ready!`,
-        html: `
+        personalizations: [
+          {
+            to: [{ email: email }],
+            subject: `Your ${productTitle} is Ready!`,
+          }
+        ],
+        from: {
+          email: "noreply@yourdomain.com",
+          name: "Debt Management Tools"
+        },
+        content: [
+          {
+            type: "text/html",
+            value: `
         <!DOCTYPE html>
         <html>
           <head>
@@ -172,24 +182,24 @@ const handler = async (req: Request): Promise<Response> => {
             </div>
           </body>
         </html>
-        `,
+        `
+          }
+        ]
       }),
     });
 
     if (!emailResponse.ok) {
       const error = await emailResponse.text();
-      console.error("Resend API error:", error);
+      console.error("SendGrid API error:", error);
       throw new Error(`Failed to send email: ${error}`);
     }
 
-    const emailData = await emailResponse.json();
-    console.log("Email sent successfully:", emailData);
+    console.log("Email sent successfully via SendGrid");
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: "Email sent successfully",
-        emailId: emailData.id 
+        message: "Email sent successfully"
       }),
       {
         status: 200,
